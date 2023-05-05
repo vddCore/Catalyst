@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <LangVersion>latest</LangVersion>
+        <TargetFramework>net35</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <Reference Include="Assembly-CSharp">
+        <HintPath>..\Catalyst.Shared\Binaries\Distance\Assembly-CSharp.dll</HintPath>
+        <HintPath>..\Catalyst.Shared\Binaries\Distance\Assembly-CSharp-firstpass.dll</HintPath>
+        <HintPath>..\Catalyst.Shared\Binaries\Mono\System.Runtime.Serialization.dll</HintPath>
+        <HintPath>..\Catalyst.Shared\Binaries\Unity\UnityEngine.dll</HintPath>
+        <HintPath>..\Catalyst.Shared\Binaries\Unity\UnityEngine.Networking.dll</HintPath>
+        <HintPath>..\Catalyst.Shared\Binaries\Unity\UnityEngine.UI.dll</HintPath>
+      </Reference>
+      <Reference Include="UnityEngine">
+        <HintPath>..\Catalyst.Shared\Binaries\Unity\UnityEngine.dll</HintPath>
+      </Reference>
+      <Reference Include="UnityEngine.Networking">
+        <HintPath>..\Catalyst.Shared\Binaries\Unity\UnityEngine.Networking.dll</HintPath>
+      </Reference>
+      <Reference Include="UnityEngine.UI">
+        <HintPath>..\Catalyst.Shared\Binaries\Unity\UnityEngine.UI.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+</Project>
