@@ -57,14 +57,6 @@ BOOL _InitializeMonoVectors(HMODULE h) {
     return TRUE;
 }
 
-MonoMethod* _FindFullyQualifiedMethod(MonoClass* class, const char* definition) {
-    MonoMethodDesc* desc = mono_method_desc_new(definition, TRUE);
-    MonoMethod* ret = mono_method_desc_search_in_class(desc, class);
-    mono_method_desc_free(desc);
-    
-    return ret;
-}
-
 BOOL _TryLoadCatalystManagedDll(PCatalystMonoContext context) {
     if (!context) {
         LOG("Invalid Mono context provided.\n");
