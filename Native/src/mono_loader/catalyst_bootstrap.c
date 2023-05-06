@@ -175,6 +175,9 @@ CatalystBootstrap_Status Catalyst_Boot(PCatalystMonoContext context) {
         goto __finish;
     }
 
+    LOG("Installing assembly load hook.\n");
+    mono_install_assembly_load_hook(_OnMonoAssemblyLoad, context);
+
     LOG("Waiting for Unity to create root domain...\n");
     MonoDomain* domain = NULL;
     while (domain == NULL) {
@@ -183,8 +186,7 @@ CatalystBootstrap_Status Catalyst_Boot(PCatalystMonoContext context) {
     context->catalystMonoDomain = domain;
     LOG("Unity root domain found, moving on.\n");
 
-    LOG("Installing assembly load hook.\n");
-    mono_install_assembly_load_hook(_OnMonoAssemblyLoad, context);
+
 
 __finish:
     return status;
