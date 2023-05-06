@@ -36,7 +36,7 @@ jobs:
       run: |
         cd Managed
         dotnet restore
-        dotnet build -c Debug --no-restore
+        dotnet build --no-restore
         cd ..
     
     - name: Consolidate build artifacts
