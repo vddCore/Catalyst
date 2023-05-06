@@ -7,7 +7,7 @@
 
 #include "shim_context.h"
 #include "shim_bridge.h"
-#include "shim_lifecycle.h"
+#include "console_alloc.h"
 
 #include "mono_loader/mono_loader.h"
 #include "mono_loader/catalyst_bootstrap.h"
@@ -20,24 +20,24 @@ BOOL ResolveContextPaths(PShimContext context) {
         return FALSE;
     }
 
-    if (!GetSystemDirectoryW(
+    if (!GetSystemDirectoryA(
         context->systemDirectoryPath,
         sizeof(context->systemDirectoryPath))
     ) return FALSE;
 
-    if (!GetModuleFileNameW(
+    if (!GetModuleFileNameA(
         context->thisModuleHandle,
         context->thisModulePath,
         sizeof(context->thisModulePath))
     ) return FALSE;
 
-    StringCchCopyW(
+    StringCchCopyA(
         context->appBaseDirectoryPath,
         sizeof(context->appBaseDirectoryPath),
         context->thisModulePath
     );
 
-    if (!PathRemoveFileSpecW(context->appBaseDirectoryPath)) {
+    if (!PathRemoveFileSpecA(context->appBaseDirectoryPath)) {
         return FALSE;
     }
 
@@ -72,7 +72,7 @@ BOOL Attach(HINSTANCE hInstDLL) {
     );
 
     if (_CurrentShimContext) {
-        ShimLifecycle_Attach(_CurrentShimContext);
+        ConsoleAlloc_Attach(_CurrentShimContext);
         ShimBridge_Create(_CurrentShimContext);
     }
 
@@ -105,6 +105,7 @@ void __stdcall Begin(HINSTANCE hInstDLL) {
 
 void Detach() {
     if (_CurrentShimContext) {
+        ConsoleAlloc_Detach(_CurrentShimContext);
         ShimContext_Destroy(_CurrentShimContext);
     }
 }

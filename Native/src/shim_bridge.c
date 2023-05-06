@@ -10,19 +10,19 @@ int ShimBridge_Create(PShimContext context) {
         return -1;
     }
 
-    LPWSTR thisModuleFileName = PathFindFileNameW(context->thisModulePath);
+    LPCSTR thisModuleFileName = PathFindFileNameA(context->thisModulePath);
     if (!thisModuleFileName) {
         return -1;
     }
 
-    WCHAR impersonatedModulePath[MAX_PATH] = {0};
-    PathCombineW(
+    CHAR impersonatedModulePath[MAX_PATH] = {0};
+    PathCombineA(
         impersonatedModulePath,
         context->systemDirectoryPath,
         thisModuleFileName
     );
 
-    HMODULE originalModuleHandle = LoadLibraryW(impersonatedModulePath);
+    HMODULE originalModuleHandle = LoadLibraryA(impersonatedModulePath);
     if (!originalModuleHandle) {
         return -1;
     }

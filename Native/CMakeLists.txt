@@ -20,7 +20,7 @@ add_library(Catalyst SHARED
     src/shim_context.h
     src/shim_bridge.c
     src/shim_bridge.h
-    src/shim_lifecycle.c
+    src/console_alloc.c
     src/mono_loader/mono_loader.c
     src/mono_loader/mono_loader.h
     src/mono_loader/catalyst_bootstrap.c

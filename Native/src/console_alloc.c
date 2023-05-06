@@ -1,10 +1,10 @@
 ﻿#include <stdio.h>
 
-#include "shim_lifecycle.h"
+#include "console_alloc.h"
 
 void _CreateDebugConsole(void) {
     AllocConsole();
-    
+
     freopen("CONIN$", "r", stdin);
     freopen("CONOUT$", "w", stdout);
     freopen("CONOUT$", "w", stderr);
@@ -14,10 +14,10 @@ void _DestroyDebugConsole(void) {
     FreeConsole();
 }
 
-void ShimLifecycle_Attach(PShimContext context) {
+void ConsoleAlloc_Attach(PShimContext context) {
     _CreateDebugConsole();
 }
 
-void ShimLifecycle_Detach(PShimContext context) {
+void ConsoleAlloc_Detach(PShimContext context) {
     _DestroyDebugConsole();
 }
