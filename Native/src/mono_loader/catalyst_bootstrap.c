@@ -32,6 +32,7 @@ MONOVECTOR(mono_method_desc_free);
 MONOVECTOR(mono_method_desc_search_in_class);
 MONOVECTOR(mono_method_desc_search_in_image);
 MONOVECTOR(mono_runtime_invoke);
+MONOVECTOR(mono_gchandle_get_target);
 
 BOOL _InitializeMonoVectors(HMODULE h) {
     MONOPROC(mono_get_root_domain)
@@ -45,12 +46,13 @@ BOOL _InitializeMonoVectors(HMODULE h) {
     MONOPROC(mono_object_new)
     MONOPROC(mono_runtime_object_init)
     MONOPROC(mono_gchandle_new)
-    MONOPROC(mono_get_intptr_class);
-    MONOPROC(mono_method_desc_new);
-    MONOPROC(mono_method_desc_free);
-    MONOPROC(mono_method_desc_search_in_class);
-    MONOPROC(mono_method_desc_search_in_image);
-    MONOPROC(mono_runtime_invoke);
+    MONOPROC(mono_get_intptr_class)
+    MONOPROC(mono_method_desc_new)
+    MONOPROC(mono_method_desc_free)
+    MONOPROC(mono_method_desc_search_in_class)
+    MONOPROC(mono_method_desc_search_in_image)
+    MONOPROC(mono_runtime_invoke)
+    MONOPROC(mono_gchandle_get_target)
     
     return TRUE;
 }
@@ -61,45 +63,6 @@ MonoMethod* _FindFullyQualifiedMethod(MonoClass* class, const char* definition) 
     mono_method_desc_free(desc);
     
     return ret;
-}
-
-MonoObject* _CreateIntPtr(MonoDomain* domain, void* reference) {
-    MonoClass* intptrClass = mono_get_intptr_class();
-    if (intptrClass == NULL) {
-        LOG("Unable to retrieve the built-in type 'System.IntPtr'.\n");
-        return NULL;
-    }
-    
-    MonoObject* intptrObject = mono_object_new(domain, intptrClass);
-    
-    if (intptrObject == NULL) {
-        LOG("Unable to create an instance of type 'System.IntPtr'.\n");
-        return NULL;
-    }
-
-    const char* methodDesc = "System.IntPtr:.ctor(int)";
-    MonoMethod* intPtrConstructor = _FindFullyQualifiedMethod(
-        intptrClass, 
-        methodDesc
-    );
-    
-    if (intPtrConstructor != NULL) {
-        void* args[1];
-        args[0] = reference;
-
-        mono_runtime_invoke(
-            intPtrConstructor,
-            intptrObject,
-            args,
-            NULL
-        );
-
-        return intptrObject;
-    }
-    else {
-         LOGV("Unable to find constructor '%s'.\n", methodDesc);
-         return NULL;
-    }
 }
 
 BOOL _TryLoadCatalystManagedDll(PCatalystMonoContext context) {
@@ -153,10 +116,7 @@ BOOL _TryInitializeManagedLayer(PCatalystMonoContext context) {
         return FALSE;
     }
 
-    MonoObject* object = mono_object_new(
-        context->catalystMonoDomain,
-        class
-    );
+    MonoObject* object = mono_object_new(context->catalystMonoDomain, class);
 
     if (!object) {
         LOGV("Failed to create an instance of '%s.%s'.\n",
@@ -168,39 +128,16 @@ BOOL _TryInitializeManagedLayer(PCatalystMonoContext context) {
     }
 
     context->catalystObjectGcHandle = mono_gchandle_new(object, TRUE);
-    LOGV("Pinned '%s.%s' instance at GC handle 0x%08X.\n",
+    object = mono_gchandle_get_target(context->catalystObjectGcHandle);
+    LOGV("Pinned '%s.%s' @ 0x%08X instance to GC handle 0x%08X.\n",
          context->catalystNamespace,
          context->catalystManagedClassName,
+         (intptr_t)object,
          context->catalystObjectGcHandle
     );
-
-    MonoObject* intptr = _CreateIntPtr(
-        context->catalystMonoDomain,
-        context
-    );
-
-    if (intptr == NULL) {
-        LOG("Aborting initialization.");
-        return FALSE;
-    }
     
-    mono_gchandle_new(intptr, TRUE);
-    MonoMethod* constructor = _FindFullyQualifiedMethod(class, context->catalystCtorFullyQualifiedName);
-    
-    if (constructor != NULL) {
-        void* args[1];
-        args[0] = intptr;
-
-        mono_runtime_invoke(constructor, object, args, NULL);
-        return TRUE;
-    } else {
-        LOGV("Unable to find constructor '%s' in type '%s.%s'.\n", 
-             context->catalystCtorFullyQualifiedName,
-             context->catalystNamespace,
-             context->catalystManagedClassName
-         );
-        return FALSE;
-    }
+    mono_runtime_object_init(object);
+    return TRUE;
 }
 
 void _OnMonoAssemblyLoad(MonoAssembly* assembly, void* user_data) {

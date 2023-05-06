@@ -93,17 +93,6 @@ void _InitializeBootSettings(PCatalystMonoContext context) {
         context->catalystManagedClassName = CATALYST_DEFAULT_CLASS;
     }
     LOGV("boot.class_name = '%s'\n", context->catalystManagedClassName);
-    
-    context->catalystCtorFullyQualifiedName = ini_get(
-        context->catalystConfig,
-        "boot",
-        "ctor_desc"
-    );
-    
-    if (!context->catalystCtorFullyQualifiedName) {
-        context->catalystCtorFullyQualifiedName = CATALYST_DEFFAULT_CTOR;
-    }
-    LOGV("boot.catalyst_ctor = '%s'\n", context->catalystCtorFullyQualifiedName);
 }
 
 MonoLoader_Status MonoLoader_Boot(LPCSTR appBaseDirectory, OUT PCatalystMonoContext* catalystMonoContext) {

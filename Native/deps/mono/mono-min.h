@@ -49,5 +49,6 @@ typedef void (*pmono_method_desc_free)(MonoMethodDesc* desc);
 typedef MonoMethod* (*pmono_method_desc_search_in_class)(MonoMethodDesc* desc, MonoClass* klass);
 typedef MonoMethod* (*pmono_method_desc_search_in_image)(MonoMethodDesc* desc, MonoImage* image);
 typedef MonoObject* (*pmono_runtime_invoke)(MonoMethod *method, void *obj, void **params, MonoObject **exc);
+typedef MonoObject* (*pmono_gchandle_get_target)(uint32_t gchandle);
 
 #endif //CATALYST_MONO_MIN_H

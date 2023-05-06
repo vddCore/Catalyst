@@ -6,7 +6,6 @@
 #include <ini/ini.h>
 #include <stdint.h>
 
-#define CATALYST_DEFFAULT_CTOR "Catalyst.Catalyst:.ctor(intptr)"
 #define CATALYST_DEFAULT_NAMESPACE "Catalyst"
 #define CATALYST_DEFAULT_CLASS "Catalyst"
 #define CATALYST_DEFAULT_LOAD_AFTER "Assembly-CSharp"
