@@ -20,24 +20,24 @@ BOOL ResolveContextPaths(PShimContext context) {
         return FALSE;
     }
 
-    if (!GetSystemDirectoryW(
+    if (!GetSystemDirectoryA(
         context->systemDirectoryPath,
         sizeof(context->systemDirectoryPath))
     ) return FALSE;
 
-    if (!GetModuleFileNameW(
+    if (!GetModuleFileNameA(
         context->thisModuleHandle,
         context->thisModulePath,
         sizeof(context->thisModulePath))
     ) return FALSE;
 
-    StringCchCopyW(
+    StringCchCopyA(
         context->appBaseDirectoryPath,
         sizeof(context->appBaseDirectoryPath),
         context->thisModulePath
     );
 
-    if (!PathRemoveFileSpecW(context->appBaseDirectoryPath)) {
+    if (!PathRemoveFileSpecA(context->appBaseDirectoryPath)) {
         return FALSE;
     }
 

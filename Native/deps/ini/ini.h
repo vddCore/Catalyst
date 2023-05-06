@@ -16,6 +16,5 @@ ini_t* ini_load(const char* filename);
 void ini_free(ini_t* ini);
 const char* ini_get(ini_t* ini, const char* section, const char* key);
 int ini_sget(ini_t* ini, const char* section, const char* key, const char* scanfmt, void* dst);
-size_t ini_wget(ini_t *ini, const char* section, const char* key, wchar_t* out, size_t max);
 
 #endif //INI_H

@@ -41,12 +41,9 @@ void _InitializeMonoVectors(HMODULE h) {
 }
 
 void _TryLoadCatalystManagedDll(PCatalystMonoContext context) {
-    char catalystDllPath[MAX_PATH] = { 0 };
-    wcstombs(catalystDllPath, context->catalystDllPath, sizeof(catalystDllPath));
-    
     context->catalystMonoAssembly = mono_domain_assembly_open(
         context->catalystMonoDomain,
-        catalystDllPath
+        context->catalystDllPath
     );
         
     if (context->catalystMonoAssembly) {
@@ -55,8 +52,8 @@ void _TryLoadCatalystManagedDll(PCatalystMonoContext context) {
         if (context->catalystMonoImage) {
             MonoClass* class = mono_class_from_name(
                 context->catalystMonoImage,
-                "Catalyst",
-                "Catalyst"
+                context->catalystNamespace,
+                context->catalystManagedClass
             );
             
             if (class) {
@@ -109,7 +106,7 @@ CatalystBootstrap_Status Catalyst_Boot(PCatalystMonoContext context) {
     }
     context->catalystMonoDomain = domain;
     
-    mono_install_assembly_load_hook(_OnMonoAssemblyLoad, context);
+    // mono_install_assembly_load_hook(_OnMonoAssemblyLoad, context);
 
     return status;
 

@@ -271,8 +271,3 @@ int ini_sget(
     }
     return 1;
 }
-
-size_t ini_wget(ini_t *ini, const char* section, const char* key, wchar_t* out, size_t max) {
-    const char* data = ini_get(ini, section, key);
-    return mbstowcs(out, data, max);
-}
