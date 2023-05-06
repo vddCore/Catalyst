@@ -1,6 +1,8 @@
 ﻿#ifndef CATALYST_MONO_MIN_H
 #define CATALYST_MONO_MIN_H
 
+#include <stdint.h>
+
 #define MONOTYPEDEF(x) \
     typedef struct _ ## x x
 
@@ -49,5 +51,6 @@ typedef MonoAssembly* (*pmono_domain_assembly_open)(MonoDomain* domain, const ch
 typedef MonoClass* (*pmono_class_from_name)(MonoImage* image, const char* name_space, const char* name);
 typedef MonoObject* (*pmono_object_new)(MonoDomain* domain, MonoClass* klass);
 typedef void (*pmono_runtime_object_init)(MonoObject* this_obj);
+typedef uint32_t (*pmono_gchandle_new)(MonoObject* obj, int pinned);
 
 #endif //CATALYST_MONO_MIN_H

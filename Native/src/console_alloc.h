@@ -1,11 +1,7 @@
-﻿#ifndef ARGENTEA_SHIM_LIFECYCLE_H
-#define ARGENTEA_SHIM_LIFECYCLE_H
+﻿#ifndef CATALYST_CONSOLE_ALLOC_H
+#define CATALYST_CONSOLE_ALLOC_H
 
-#include <windows.h>
+void ConsoleAlloc_Attach();
+void ConsoleAlloc_Detach();
 
-#include "shim_context.h"
-
-void ConsoleAlloc_Attach(PShimContext context);
-void ConsoleAlloc_Detach(PShimContext context);
-
-#endif //ARGENTEA_SHIM_LIFECYCLE_H
+#endif //CATALYST_CONSOLE_ALLOC_H

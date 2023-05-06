@@ -11,25 +11,33 @@
 
 #include "mono_loader/mono_loader.h"
 #include "mono_loader/catalyst_bootstrap.h"
+#include "util.h"
 
 static volatile PShimContext _CurrentShimContext;
 static PCatalystMonoContext _CurrentCatalystContext;
 
 BOOL ResolveContextPaths(PShimContext context) {
     if (!context) {
+        LOG("Invalid shim context provided.\n");
         return FALSE;
     }
 
     if (!GetSystemDirectoryA(
         context->systemDirectoryPath,
         sizeof(context->systemDirectoryPath))
-    ) return FALSE;
+        ) {
+        LOGV("Failed to retrieve the system library directory: 0x%08lX.\n", GetLastError());
+        return FALSE;
+    }
 
     if (!GetModuleFileNameA(
         context->thisModuleHandle,
         context->thisModulePath,
         sizeof(context->thisModulePath))
-    ) return FALSE;
+        ) {
+        LOGV("Failed to retrieve this DLL's file path: 0x%08lX.\n", GetLastError());
+        return FALSE;
+    }
 
     StringCchCopyA(
         context->appBaseDirectoryPath,
@@ -38,6 +46,7 @@ BOOL ResolveContextPaths(PShimContext context) {
     );
 
     if (!PathRemoveFileSpecA(context->appBaseDirectoryPath)) {
+        LOG("Failed to retrieve application base directory path.\n");
         return FALSE;
     }
 
@@ -47,32 +56,33 @@ BOOL ResolveContextPaths(PShimContext context) {
 PShimContext InitializeShimContext(HINSTANCE hInstDLL, DWORD dwProcessId) {
     PShimContext context = ShimContext_Create();
 
-    if (context) {
-        context->thisModuleHandle = hInstDLL;
-        context->parentProcessId = dwProcessId;
-
-        if (!ResolveContextPaths(context)) {
-            goto __error;
-        }
+    if (!context) {
+        LOG("Shim context creation failed.\n");
+        return NULL;
     }
 
-    return context;
+    context->thisModuleHandle = hInstDLL;
+    context->parentProcessId = dwProcessId;
 
-    __error:
-    free(context);
-    context = NULL;
+    if (!ResolveContextPaths(context)) {
+        free(context);
+        context = NULL;
+        LOG("One or more critical paths have failed to resolve.\n");
+    }
 
     return context;
 }
 
 BOOL Attach(HINSTANCE hInstDLL) {
+    ConsoleAlloc_Attach();
+    LOGV("Catalyst Native [%s] starting...\n", CATALYST_VERSION);
+
     _CurrentShimContext = InitializeShimContext(
         hInstDLL,
         GetCurrentProcessId()
     );
 
     if (_CurrentShimContext) {
-        ConsoleAlloc_Attach(_CurrentShimContext);
         ShimBridge_Create(_CurrentShimContext);
     }
 
@@ -83,29 +93,36 @@ void __stdcall Begin(HINSTANCE hInstDLL) {
     BOOL result = Attach(hInstDLL);
 
     if (result) {
-        if (MonoLoader_Boot(_CurrentShimContext->appBaseDirectoryPath, &_CurrentCatalystContext) != MONOLOADER_STATUS_OK) {
-            MessageBox(
-                NULL,
-                "Catalyst has failed to initialize Mono runtime.\nThe game will still function, but mods will not load.",
-                "Catalyst boot failure",
-                MB_OK
+        MonoLoader_Status loaderStatus = MonoLoader_Boot(_CurrentShimContext->appBaseDirectoryPath,
+                                                         &_CurrentCatalystContext);
+        if (loaderStatus != MONOLOADER_STATUS_OK) {
+            LOGV(
+                "Mono loader has failed with status code %d.\n",
+                loaderStatus
             );
+            LOG("Mods will *not* be loaded.\n");
+
+            return;
         }
-        
-        if (Catalyst_Boot(_CurrentCatalystContext) != CATALYST_BOOTSTRAP_STATUS_OK) {
-            MessageBox(
-                NULL,
-                "Catalyst has failed to bootstrap the .NET module.\nThe game will still function, but mods will not load.",
-                "Catalyst boot failure",
-                MB_OK
+
+        CatalystBootstrap_Status bootstrapStatus = Catalyst_Boot(_CurrentCatalystContext);
+        if (bootstrapStatus != CATALYST_BOOTSTRAP_STATUS_OK) {
+            LOGV(
+                "Catalyst managed layer bootstrapper failed with status code %d.\n",
+                bootstrapStatus
             );
+            LOG("Mods will *not* be loaded.\n");
+            return;
         }
+    } else {
+        LOG("Shim context initialization has failed.\n");
+        LOG("Mods will *not* be loaded.\n");
     }
 }
 
 void Detach() {
     if (_CurrentShimContext) {
-        ConsoleAlloc_Detach(_CurrentShimContext);
+        ConsoleAlloc_Detach();
         ShimContext_Destroy(_CurrentShimContext);
     }
 }

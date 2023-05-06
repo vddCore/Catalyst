@@ -4,17 +4,11 @@
 #include <windows.h>
 
 #include <ini/ini.h>
+#include <stdint.h>
 
 #define CATALYST_DEFAULT_NAMESPACE "Catalyst"
 #define CATALYST_DEFAULT_CLASS "Catalyst"
 #define CATALYST_DEFAULT_LOAD_AFTER "Assembly-CSharp"
-
-
-#define VERBOSE(msg) \
-    printf("[%s: %d] " msg, __FILE__, __LINE__)
-
-#define VERBOSEV(fmt, ...) \
-    printf("[%s: %d] " fmt, __FILE__, __LINE__, __VA_ARGS__)
 
 typedef enum _MonoLoader_Status {
   MONOLOADER_STATUS_OK = 0,
@@ -38,9 +32,11 @@ typedef struct _CatalystMonoContext {
     void* catalystMonoDomain;
     void* catalystMonoImage;
     void* catalystMonoAssembly;
+    uint32_t catalystObjectGcHandle;
     
     const char* catalystNamespace;
-    const char* catalystManagedClass;
+    const char* catalystManagedClassName;
+    
 } CatalystMonoContext, *PCatalystMonoContext;
 
 MonoLoader_Status MonoLoader_Boot(

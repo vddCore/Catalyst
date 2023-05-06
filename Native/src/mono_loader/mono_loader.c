@@ -2,12 +2,13 @@
 
 #include <shlwapi.h>
 
+#include "../util.h"
 #include "mono_loader.h"
 
 BOOL _LoadCatalystConfig(PCatalystMonoContext context) {
     context->catalystConfig = ini_load(context->catalystConfigPath);
     if (!context->catalystConfig) {
-        VERBOSEV("Failed to load config file %s.\n", context->catalystConfigPath);
+        LOGV("Failed to load config file '%s'.\n", context->catalystConfigPath);
         return FALSE;
     }
 
@@ -26,7 +27,7 @@ MonoLoader_Status _InitializeContextPaths(LPCSTR appBaseDirectory, PCatalystMono
     );
 
     if (!_LoadCatalystConfig(context)) {
-        VERBOSE("Configuration read error.");
+        LOG("Configuration read error.\n");
         return MONOLOADER_STATUS_CFG_READ_ERROR;
     }
     
@@ -38,9 +39,10 @@ MonoLoader_Status _InitializeContextPaths(LPCSTR appBaseDirectory, PCatalystMono
     );
 
     if (!_FileExists(context->unityMonoDllPath)) {
-        VERBOSEV("Could not find Unity Mono DLL path '%s'", context->unityMonoDllPath);
+        LOGV("Could not find Unity Mono DLL path '%s'.\n", context->unityMonoDllPath);
         return MONOLOADER_STATUS_MONO_DLL_MISSING;
     }
+    LOGV("paths.unity_mono_dll = '%s'\n", context->unityMonoDllPath);
 
     sprintf(
         context->catalystDllPath,
@@ -50,8 +52,10 @@ MonoLoader_Status _InitializeContextPaths(LPCSTR appBaseDirectory, PCatalystMono
     );
 
     if (!_FileExists(context->catalystDllPath)) {
+        LOGV("Could not find Catalyst Managed Layer DLL path: '%s'.\n", context->catalystDllPath);
         return MONOLOADER_STATUS_CATALYST_DLL_MISSING;
     }
+    LOGV("paths.catalyst_managed_dll = '%s'\n", context->catalystDllPath);
 
     return MONOLOADER_STATUS_OK;
 }
@@ -63,9 +67,10 @@ void _InitializeBootSettings(PCatalystMonoContext context) {
         "load_after"
     );
 
-    if (!context->catalystLoadAfter) {
+    if (!context->catalystLoadAfter) {        
         context->catalystLoadAfter = CATALYST_DEFAULT_LOAD_AFTER;
     }
+    LOGV("boot.load_after = '%s'\n", context->catalystLoadAfter);
 
     context->catalystNamespace = ini_get(
         context->catalystConfig,
@@ -76,16 +81,18 @@ void _InitializeBootSettings(PCatalystMonoContext context) {
     if (!context->catalystNamespace) {
         context->catalystNamespace = CATALYST_DEFAULT_NAMESPACE;
     }
+    LOGV("boot.namespace = '%s'\n", context->catalystNamespace);
 
-    context->catalystManagedClass = ini_get(
+    context->catalystManagedClassName = ini_get(
         context->catalystConfig,
         "boot",
         "class_name"
     );
 
-    if (!context->catalystManagedClass) {
-        context->catalystManagedClass = CATALYST_DEFAULT_CLASS;
+    if (!context->catalystManagedClassName) {
+        context->catalystManagedClassName = CATALYST_DEFAULT_CLASS;
     }
+    LOGV("boot.class_name = '%s'\n", context->catalystManagedClassName);
 }
 
 MonoLoader_Status MonoLoader_Boot(LPCSTR appBaseDirectory, OUT PCatalystMonoContext* catalystMonoContext) {
@@ -104,12 +111,18 @@ MonoLoader_Status MonoLoader_Boot(LPCSTR appBaseDirectory, OUT PCatalystMonoCont
 
     context->monoLibraryHandle = LoadLibraryA(context->unityMonoDllPath);
     if (!context->monoLibraryHandle) {
+        LOGV(
+            "Attempt to load '%s' failed with system error: 0x%lX\n", 
+            context->unityMonoDllPath,
+            GetLastError()
+        );
+        
         status = MONOLOADER_STATUS_MONO_DLL_LOAD_ERROR;
         goto __emotional_damage;
     }
 
     _InitializeBootSettings(context);
-
+    
     *catalystMonoContext = context;
     return status;
 

@@ -1,4 +1,5 @@
 ﻿#include <stdio.h>
+#include <windows.h>
 
 #include "console_alloc.h"
 
@@ -14,10 +15,5 @@ void _DestroyDebugConsole(void) {
     FreeConsole();
 }
 
-void ConsoleAlloc_Attach(PShimContext context) {
-    _CreateDebugConsole();
-}
-
-void ConsoleAlloc_Detach(PShimContext context) {
-    _DestroyDebugConsole();
-}
+void ConsoleAlloc_Attach() { _CreateDebugConsole(); }
+void ConsoleAlloc_Detach() { _DestroyDebugConsole(); }

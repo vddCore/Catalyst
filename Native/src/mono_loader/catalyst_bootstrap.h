@@ -7,6 +7,7 @@ typedef enum _CatalystBootstrap_Status {
     CATALYST_BOOTSTRAP_STATUS_OK = 0,
     CATALYST_BOOTSTRAP_STATUS_INVALID_CONTEXT = 1,
     CATALYST_BOOTSTRAP_STATUS_NO_MONO_HANDLE = 2,
+    CATALYST_BOOTSTRAP_VECTOR_INITIALIZATION_FAILED = 3
 } CatalystBootstrap_Status;
 
 CatalystBootstrap_Status Catalyst_Boot(PCatalystMonoContext context);

@@ -25,7 +25,7 @@ add_library(Catalyst SHARED
     src/mono_loader/mono_loader.h
     src/mono_loader/catalyst_bootstrap.c
     src/mono_loader/catalyst_bootstrap.h
-)
+    src/util.h)
 
 target_link_libraries(Catalyst shlwapi ini)
 

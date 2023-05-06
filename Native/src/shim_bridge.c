@@ -4,6 +4,7 @@
 
 #include "shim_bridge.h"
 #include "shims/shims.h"
+#include "util.h"
 
 int ShimBridge_Create(PShimContext context) {
     if (!context) {
@@ -12,6 +13,7 @@ int ShimBridge_Create(PShimContext context) {
 
     LPCSTR thisModuleFileName = PathFindFileNameA(context->thisModulePath);
     if (!thisModuleFileName) {
+        LOG("Could not retrieve this DLL's module file name.\n");
         return -1;
     }
 
@@ -24,6 +26,7 @@ int ShimBridge_Create(PShimContext context) {
 
     HMODULE originalModuleHandle = LoadLibraryA(impersonatedModulePath);
     if (!originalModuleHandle) {
+        LOGV("Could not load proxied DLL: 0x%08lX\n", GetLastError());
         return -1;
     }
 
