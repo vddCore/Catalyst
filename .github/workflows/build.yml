@@ -13,6 +13,16 @@ jobs:
     steps:
     - name: Clone sources
       uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      
+    - name: Build Catalyst managed layer
+      run: |
+        cd Managed
+        dotnet restore
+        dotnet build -c Debug --no-restore
+        cd ..
 
     - name: Setup Ninja
       uses: urkle/action-get-ninja@v1.0.0
@@ -27,16 +37,6 @@ jobs:
         cmake -G "Ninja" -S Native -B Native_build
         cd Native_build
         ninja
-        cd ..
-        
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      
-    - name: Build Catalyst managed layer
-      run: |
-        cd Managed
-        dotnet restore
-        dotnet build --no-restore
         cd ..
     
     - name: Consolidate build artifacts
