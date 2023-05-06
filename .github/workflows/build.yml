@@ -25,9 +25,9 @@ jobs:
         cd ..
 
     - name: Setup Ninja
-      uses: urkle/action-get-ninja@v1.0.0
+      uses: ashutoshvarma/setup-ninja@v1.1
       
-    - name: Prepare MSVC
+    - name: Configure MSVC
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x86
@@ -43,6 +43,7 @@ jobs:
       run: |
         mkdir Artifact
         mkdir Artifact/Catalyst
+        copy Native/src/catalyst.cfg Artifact/catalyst.cfg
         copy Native_build/winhttp.dll Artifact/winhttp.dll
         copy Managed/Catalyst/bin/Debug/net35/Catalyst*.dll Artifact/Catalyst/Catalyst.dll
         
