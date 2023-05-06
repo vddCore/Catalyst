@@ -183,7 +183,8 @@ BOOL _TryInitializeManagedLayer(PCatalystMonoContext context) {
         LOG("Aborting initialization.");
         return FALSE;
     }
-
+    
+    mono_gchandle_new(intptr, TRUE);
     MonoMethod* constructor = _FindFullyQualifiedMethod(class, context->catalystCtorFullyQualifiedName);
     
     if (constructor != NULL) {
