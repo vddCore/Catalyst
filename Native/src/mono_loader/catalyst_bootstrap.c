@@ -186,8 +186,6 @@ CatalystBootstrap_Status Catalyst_Boot(PCatalystMonoContext context) {
     context->catalystMonoDomain = domain;
     LOG("Unity root domain found, moving on.\n");
 
-
-
 __finish:
     return status;
 }

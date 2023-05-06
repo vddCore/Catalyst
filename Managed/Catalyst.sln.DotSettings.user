@@ -2,4 +2,5 @@
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cvdd_005CDocuments_005CCode_005Cdotnet_005CCatalyst_005CCatalyst_002EShared_005CBinaries_005CDistance_005CAssembly_002DCSharp_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cvdd_005CDocuments_005CCode_005Cdotnet_005CCatalyst_005CCatalyst_002EShared_005CBinaries_005CUnity_005CUnityEngine_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cvdd_005CDocuments_005CCode_005Cdotnet_005CCatalyst_005CCatalyst_002EShared_005CBinaries_005CUnity_005CUnityEngine_002ENetworking_002Edll/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cvdd_005CDocuments_005CCode_005Cdotnet_005CCatalyst_005CCatalyst_002EShared_005CBinaries_005CUnity_005CUnityEngine_002EUI_002Edll/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cvdd_005CDocuments_005CCode_005Cdotnet_005CCatalyst_005CCatalyst_002EShared_005CBinaries_005CUnity_005CUnityEngine_002EUI_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/CodeInspection/PencilsConfiguration/ActualSeverity/@EntryValue">SUGGESTION</s:String></wpf:ResourceDictionary>
