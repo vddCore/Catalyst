@@ -1,6 +1,6 @@
 ﻿namespace Catalyst.API.Systems
 {
-    public interface IModManager
+    public class IModRepository
     {
         
     }

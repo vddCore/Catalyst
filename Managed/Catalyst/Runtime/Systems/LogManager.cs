@@ -52,7 +52,7 @@ namespace Catalyst.Runtime.Systems
                         
                         lock (_logWriter)
                         {
-                            _logWriter.WriteLine();
+                            _logWriter.WriteLine(msg);
                         }
                         
                         Console.WriteLine(msg);

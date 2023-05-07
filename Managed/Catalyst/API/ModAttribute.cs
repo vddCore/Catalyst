@@ -1,13 +1,14 @@
 ﻿using System;
+using Catalyst.Runtime;
 
 namespace Catalyst.API
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class ModAttribute : Attribute
+    public sealed class ModAttribute : Attribute
     {
-        public string ID { get; }
+        public ModId ModID { get; }
 
-        public ModAttribute(string id)
-            => ID = id;
+        public ModAttribute(string modIdString)
+            => ModID = new(modIdString);
     }
 }

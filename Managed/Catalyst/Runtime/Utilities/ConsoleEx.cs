@@ -1,16 +1,13 @@
 ﻿using System;
 using System.IO;
 
-namespace Catalyst.Runtime
+namespace Catalyst.Runtime.Utilities
 {
     internal class ConsoleEx
     {
         private static StreamWriter? _outputWriter;
         private static TextWriter? _originalStream;
 
-        public static bool FancyColorsEnabled { get; set; } = true;
-        public static bool IsRedirecting => Console.Out == _outputWriter;
-        
         public static void Redirect()
         {
             RecreateOutputStream();

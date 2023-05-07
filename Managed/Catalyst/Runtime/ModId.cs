@@ -4,14 +4,14 @@ using System.Text.RegularExpressions;
 
 namespace Catalyst.Runtime
 {
-    internal class ModId
+    public class ModId : IEquatable<ModId>
     {
         private static readonly Regex _regex = new(@"(?<domain>([A-Za-z]+)(\.[A-Za-z]+)?)\/(?<mod_name>[A-Za-z]+)");
 
         public string Domain { get; }
         public string ModName { get; }
         
-        public ModId(string modIdString)
+        internal ModId(string modIdString)
         {
             var match = _regex.Match(modIdString);
             
@@ -27,6 +27,9 @@ namespace Catalyst.Runtime
         public static implicit operator string(ModId modId) 
             => modId.ToString();
 
+        public static implicit operator ModId(string str)
+            => new(str);
+
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -37,5 +40,31 @@ namespace Catalyst.Runtime
 
             return sb.ToString();
         }
+
+        public bool Equals(ModId? other)
+        {
+            return Domain == other?.Domain
+                && ModName == other.ModName;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return (obj is ModId modId)
+                && Equals(modId);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Domain.GetHashCode() * 397) ^ ModName.GetHashCode();
+            }
+        }
+
+        public static bool operator ==(ModId? left, ModId? right) 
+            => Equals(left, right);
+
+        public static bool operator !=(ModId? left, ModId? right) 
+            => !Equals(left, right);
     }
 }

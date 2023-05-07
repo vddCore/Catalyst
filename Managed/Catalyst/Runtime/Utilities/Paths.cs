@@ -1,10 +1,9 @@
 ﻿using System.IO;
-using Catalyst.Runtime;
 using UnityEngine;
 
-namespace Catalyst.API
+namespace Catalyst.Runtime.Utilities
 {
-    public static class Paths
+    internal static class Paths
     {
         public static string BaseDirectory { get; } = Path.Combine(
             Path.GetDirectoryName(Application.dataPath)!,

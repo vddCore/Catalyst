@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Catalyst.API;
+using Catalyst.Runtime.Utilities;
 
 namespace Catalyst.Runtime
 {
