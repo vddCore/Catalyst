@@ -6,10 +6,9 @@ using UnityEngine.SceneManagement;
 
 namespace Catalyst
 {
-    internal class Catalyst
+    internal class CatalystCore
     {
         private GameObject _gameObject = null!;
-        
         
         public static LogManager LogManager { get; } = new(Paths.LogStoreDirectory);
         public static StorageManager StorageManager { get; } = new(Paths.DataStoreDirectory);
@@ -18,7 +17,7 @@ namespace Catalyst
         public static ModId ModID { get; } = new("eu.vddcore/Catalyst");
         public static Log Log { get; } = LogManager.CreateLog(ModID);
 
-        public Catalyst()
+        public CatalystCore()
         {
             ConsoleEx.Redirect();
             
@@ -38,7 +37,6 @@ namespace Catalyst
             {
                 Log.InstallUnityLogHook();
                 ModManager = _gameObject.AddComponent<ModManager>();
-                ModManager.ModId = ModID;
             }
             _gameObject.SetActive(true);
         }

@@ -18,18 +18,18 @@ namespace Catalyst.Runtime
         }
 
         public void Info(string msg)
-            => _logManager.EnqueueWriteOperation(FormatMessage(msg, "INF"));
+            => _logManager.EnqueueWriteOperation(FormatMessage(msg, LogLevel.Information));
 
         public void Warning(string msg)
-            => _logManager.EnqueueWriteOperation(FormatMessage(msg, "WRN"));
+            => _logManager.EnqueueWriteOperation(FormatMessage(msg, LogLevel.Warning));
 
         public void Error(string msg)
-            => _logManager.EnqueueWriteOperation(FormatMessage(msg, "ERR"));
+            => _logManager.EnqueueWriteOperation(FormatMessage(msg, LogLevel.Exception));
 
         public void Exception(Exception e)
         {
             var sb = new StringBuilder();
-            sb.AppendLine(FormatMessage("An exception has occurred.", "EXC"));
+            sb.AppendLine(FormatMessage("An exception has occurred.", LogLevel.Exception));
 
             var lines = e.ToString().Split('\n');
             for (var i = 0; i < lines.Length; i++)
@@ -57,7 +57,7 @@ namespace Catalyst.Runtime
         private void ExceptionWithStackTrace(string message, string stackTrace)
         {
             var sb = new StringBuilder();
-            sb.AppendLine(FormatMessage("An exception has occurred.", "EXC"));
+            sb.AppendLine(FormatMessage("An exception has occurred.", LogLevel.Exception));
             sb.Append("  ");
             sb.AppendLine(message);
             
@@ -102,13 +102,26 @@ namespace Catalyst.Runtime
             }
         }
 
-        private string FormatMessage(string msg, string logLevelTag)
+        private string GetLogLevelVisual(LogLevel logLevel)
+        {
+            return logLevel switch
+            {
+                LogLevel.Information => "[i] ",
+                LogLevel.Warning => "[*] ",
+                LogLevel.Error => "[E] ",
+                LogLevel.Exception => "[X] ",
+                _ => "[?] "
+            };
+        }
+
+        private string FormatMessage(string msg, LogLevel logLevel, string context = "Default")
         {
             var sb = new StringBuilder();
 
-            sb.Append(logLevelTag);
-            sb.Append(" :: ");
+            sb.Append(GetLogLevelVisual(logLevel));
             sb.Append(_modId);
+            sb.Append(" :: ");
+            sb.Append(context);
             sb.Append(" :: ");
             sb.Append(msg);
 
